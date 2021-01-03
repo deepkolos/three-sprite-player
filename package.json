@@ -1,0 +1,37 @@
+{
+  "name": "three-sprite-player",
+  "version": "1.0.0",
+  "description": "一个适用于小程序的threejs分块序列图播放工具以及分块工具",
+  "bin": {
+    "tsp-cli": "dist/three-sprite-player.cli.js"
+  },
+  "main": "dist/three-sprite-player.cjs.js",
+  "module": "dist/three-sprite-player.esm.js",
+  "browser": "dist/three-sprite-player.umd.js",
+  "scripts": {
+    "example": "http-server .",
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "node test/test.js",
+    "pretest": "npm run build",
+    "preexample": "npm run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "DeepKolos<deepkolos@qq.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^11.0.1",
+    "@rollup/plugin-typescript": "^8.1.0",
+    "http-server": "^0.12.3",
+    "rollup": "^2.35.1",
+    "three": "^0.124.0"
+  },
+  "dependencies": {
+    "jimp": "^0.16.1"
+  }
+}

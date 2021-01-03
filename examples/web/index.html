@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ThreeSpritePlayer</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      .btn {
+        position: absolute;
+        top: 80px;
+        left: 80px;
+        font-size: 20px;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="../../dist/three-sprite-player.umd.js"></script>
+    <script>
+      const tile = {
+        url: Array(5)
+          .fill(0)
+          .map((v, k) => `../img/output-${k}.png`),
+        x: 0,
+        y: 0,
+        z: -15,
+        w: (10 * 517.5) / 381,
+        h: 10,
+        col: 3,
+        row: 5,
+        total: 67,
+        fps: 16,
+      };
+
+      const renderer = new THREE.WebGLRenderer();
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100,
+      );
+      const textureLoader = new THREE.TextureLoader();
+      const btn = document.createElement('button');
+      btn.textContent = '播放';
+      btn.disabled = true;
+      btn.classList.add('btn');
+      document.body.append(btn);
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      Promise.all(tile.url.map(i => textureLoader.loadAsync(i))).then(tiles => {
+        const spritePlayer = new ThreeSpritePlayer(
+          tiles,
+          tile.total,
+          tile.row,
+          tile.col,
+          tile.fps,
+        );
+        const geometry = new THREE.PlaneGeometry(tile.w, tile.h);
+        const material = new THREE.MeshBasicMaterial({
+          map: spritePlayer.texture,
+          transparent: true,
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(tile.x, tile.y, tile.z);
+        scene.add(mesh);
+        spritePlayer.stop();
+        btn.disabled = false;
+        btn.onclick = function () {
+          spritePlayer.playing ? spritePlayer.stop() : spritePlayer.play();
+          btn.textContent = spritePlayer.playing ? '暂停' : '播放';
+        };
+
+        function render() {
+          requestAnimationFrame(render);
+          spritePlayer.animate();
+          material.map = spritePlayer.texture;
+          renderer.render(scene, camera);
+        }
+
+        document.body.append(renderer.domElement);
+        render();
+      });
+    </script>
+  </body>
+</html>
