@@ -1,4 +1,4 @@
-import json from '@rollup/plugin-json'
+import json from '@rollup/plugin-json';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
@@ -6,10 +6,10 @@ import pkg from './package.json';
 
 const plugins = [
   json(),
-  resolve(), // so Rollup can find `ms`
+  resolve({ jail: 'jimp' }), // so Rollup can find `ms`
   commonjs(), // so Rollup can convert `ms` to an ES module
   typescript(),
-]
+];
 
 export default [
   // browser-friendly UMD build
@@ -39,11 +39,11 @@ export default [
   },
 
   {
-    input: 'src/cli.ts',
+    input: 'src/main-cli.ts',
     output: {
       file: pkg.bin['tsp-cli'],
       format: 'cjs',
     },
     plugins,
-  }
+  },
 ];

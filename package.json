@@ -12,6 +12,7 @@
     "example": "http-server .",
     "build": "rollup -c",
     "dev": "rollup -c -w",
+    "cli": "node dist/three-sprite-player.cli.js -i ./examples/img/frames 1024",
     "test": "node test/test.js",
     "pretest": "npm run build",
     "preexample": "npm run build"
