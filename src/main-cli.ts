@@ -7,6 +7,8 @@ import process from 'process';
 const cli = new CLI();
 
 interface Args {
+  w?: string;
+  h?: string;
   dir: string;
   tileW?: string;
   cropX?: string;
@@ -28,6 +30,8 @@ interface ArgsParsed {
 }
 
 async function parseArgs({
+  w,
+  h,
   dir,
   tileW,
   cropX,
@@ -41,8 +45,8 @@ async function parseArgs({
   if (!imgs.length) throw new Error('empty directory');
 
   const oneImg = await Jimp.create(dir + path.sep + imgs[0]);
-  const imgW = oneImg.getWidth();
-  const imgH = oneImg.getHeight();
+  const imgW = ~~w ?? oneImg.getWidth();
+  const imgH = ~~h ?? oneImg.getHeight();
 
   return {
     dir,
@@ -115,13 +119,13 @@ imgH: ${imgH}   cropH: ${cropH}
 cli
   .action('-h --help', '显示帮助', '', () => cli.help())
   .action<Args>(
-    '-i --input [dir] [?tileW] [?cropX] [?cropY] [?cropW] [?cropH]',
-    '列出环境变量',
+    '-i --input [dir] [?tileW] [?w] [?h] [?cropX] [?cropY] [?cropW] [?cropH]',
+    '合成分块序列帧',
     '',
     main,
   )
 
   .action("tsp-cli -i '../examples/img/frames' 1024", '', 'Examples')
-  .action("tsp-cli -i '../examples/img/frames' 1024 0 0 100 100", '', 'Examples')
+  .action("tsp-cli -i '../examples/img/frames' 1024 100 100 0 0 100 100", '', 'Examples')
 
   .run(process.argv.slice(2));
