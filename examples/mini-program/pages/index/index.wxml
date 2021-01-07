@@ -1,0 +1,2 @@
+<!--index.wxml-->
+<canvas type="webgl" id="canvas"></canvas>

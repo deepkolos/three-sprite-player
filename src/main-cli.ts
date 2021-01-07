@@ -65,10 +65,10 @@ const main = async (args: Args) => {
     const col = Math.floor(tileW / cropW);
     const row = Math.floor(tileW / cropH);
     const tileNum = Math.ceil(imgs.length / (col * row));
-    console.log(imgs, imgW, imgH)
-    console.log(col, row, tileNum);
-    console.log(dir, tileW, cropX, cropY, cropW, cropH);
-    return;
+    // console.log(imgs, imgW, imgH)
+    // console.log(col, row, tileNum);
+    // console.log(dir, tileW, cropX, cropY, cropW, cropH);
+    // return;
 
     await Promise.all(Array(tileNum).fill(0).map(async (v, t) => {
       const tileImg = await Jimp.create(
@@ -100,7 +100,12 @@ const main = async (args: Args) => {
 
     console.log(`
 cost: ${Date.now() - t}ms
-col: ${col}   row: ${row}   tileNum: ${tileNum}   spriteNum: ${imgs.length}
+col: ${col}
+row: ${row}
+tileNum: ${tileNum}
+spriteNum: ${imgs.length}
+imgW: ${imgW}   cropW: ${cropW}
+imgH: ${imgH}   cropH: ${cropH}
 `)
   } catch (error) {
     console.log(error)
@@ -116,8 +121,7 @@ cli
     main,
   )
 
-  .action("tsp-cli -i '~/imgs' 10 20", '', 'Examples')
-  .action("tsp-cli -i '~/imgs' 10 20 1024", '', 'Examples')
-  .action("tsp-cli -i '~/imgs' 10 20 1024 1 2 5 5", '', 'Examples')
+  .action("tsp-cli -i '../examples/img/frames' 1024", '', 'Examples')
+  .action("tsp-cli -i '../examples/img/frames' 1024 0 0 100 100", '', 'Examples')
 
   .run(process.argv.slice(2));
