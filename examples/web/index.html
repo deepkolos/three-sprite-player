@@ -12,7 +12,9 @@
       .btn {
         position: absolute;
         top: 80px;
-        left: 80px;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
         font-size: 20px;
         padding: 5px;
       }
@@ -23,21 +25,22 @@
     <script src="../../dist/three-sprite-player.umd.js"></script>
     <script>
       const tile = {
-        url: Array(5)
+        url: Array(3)
           .fill(0)
           .map((v, k) => `../img/output-${k}.png`),
         x: 0,
         y: 0,
         z: -15,
-        w: (10 * 517.5) / 381,
+        w: (10 * 358) / 358,
         h: 10,
-        col: 3,
-        row: 5,
-        total: 67,
+        col: 2,
+        row: 2,
+        total: 10,
         fps: 16,
       };
 
       const renderer = new THREE.WebGLRenderer();
+      renderer.outputEncoding = THREE.sRGBEncoding;
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(
         75,
@@ -62,6 +65,7 @@
           tile.col,
           tile.fps,
         );
+
         const geometry = new THREE.PlaneGeometry(tile.w, tile.h);
         const material = new THREE.MeshBasicMaterial({
           map: spritePlayer.texture,
@@ -69,6 +73,7 @@
         });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.position.set(tile.x, tile.y, tile.z);
+
         scene.add(mesh);
         spritePlayer.stop();
         btn.disabled = false;
@@ -80,6 +85,7 @@
         function render() {
           requestAnimationFrame(render);
           spritePlayer.animate();
+          // 更新material.map
           material.map = spritePlayer.texture;
           renderer.render(scene, camera);
         }

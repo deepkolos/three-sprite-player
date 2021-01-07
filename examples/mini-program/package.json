@@ -1,0 +1,15 @@
+{
+  "name": "mini-program",
+  "version": "1.0.0",
+  "description": "```sh\r > /youpathto/three-sprite-player/\r npm run dev",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "threejs-miniprogram": "0.0.5"
+  }
+}

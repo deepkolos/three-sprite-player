@@ -8,6 +8,7 @@ export default class ThreeSpritePlayer {
   playing: boolean;
   currTile: number;
   currTileOffset: number;
+  mesh?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
 
   constructor(
     protected tiles: THREE.Texture[],
@@ -15,6 +16,7 @@ export default class ThreeSpritePlayer {
     protected row: number,
     protected col: number,
     fps = 24,
+    sRGB = true,
   ) {
     this.playing = true;
     this.currFrame = 0;
@@ -24,8 +26,10 @@ export default class ThreeSpritePlayer {
       texture.wrapT = 1001; // three.ClampToEdgeWrapping;
       texture.minFilter = 1006; // THREE.LinearFilter
       texture.repeat.set(1 / this.col, 1 / this.row);
+      if (sRGB)
+        texture.encoding = 3001; // THREE.sRGBEncoding
     });
-    this.updateOffset()
+    this.updateOffset();
   }
 
   public stop() {
@@ -50,14 +54,13 @@ export default class ThreeSpritePlayer {
     this.startFrame = this.startFrame ?? this.currFrame;
     const nextFrame = this.startFrame + ~~((now - this.startTime) / this.frameGap)
     this.currFrame = nextFrame % this.totalFrame
-  
+
     if (nextFrame > this.currFrame) {
       this.startTime = now
       this.startFrame = this.currFrame
     }
 
     this.updateOffset()
-    // console.log(this.currTile, this.currTileOffset);
   }
 
   protected updateOffset() {
@@ -73,11 +76,12 @@ export default class ThreeSpritePlayer {
       texture.offset.x = currentColumn / this.col;
       texture.offset.y = 1 - currentRow / this.row - tileHeight;
     }
-
   }
 
   public dispose() {
+    this.mesh?.material.dispose()
     this.tiles.forEach(texture => texture.dispose());
     this.tiles.length = 0;
+    this.mesh = null
   }
 }
