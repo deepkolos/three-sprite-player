@@ -45,7 +45,6 @@ var ThreeSpritePlayer = /** @class */ (function () {
         this.startFrame = (_b = this.startFrame) !== null && _b !== void 0 ? _b : this.currFrame;
         var nextFrame = this.startFrame + ~~((now - this.startTime) / this.frameGap);
         this.currFrame = nextFrame % this.totalFrame;
-        console.log(~~((now - this.startTime) / this.frameGap), now - this.startTime);
         if (nextFrame > this.currFrame) {
             this.startTime = now;
             this.startFrame = this.currFrame;

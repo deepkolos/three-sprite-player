@@ -46,7 +46,7 @@ export default class ThreeSpritePlayer {
     return this.tiles[this.currTile];
   }
 
-  public animate(): THREE.Texture {
+  public animate() {
     if (!this.playing || this.totalFrame === 1) return
 
     const now = Date.now();
