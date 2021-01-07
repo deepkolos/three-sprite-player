@@ -8,14 +8,13 @@
   "main": "dist/three-sprite-player.cjs.js",
   "module": "dist/three-sprite-player.esm.js",
   "browser": "dist/three-sprite-player.umd.js",
+  "miniprogram": "dist/three-sprite-player.esm.js",
   "scripts": {
     "example": "http-server .",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "cli": "node dist/three-sprite-player.cli.js -i ./examples/img/frames 1024",
-    "test": "node test/test.js",
-    "pretest": "npm run build",
-    "preexample": "npm run build"
+    "test": "node test/test.js"
   },
   "files": [
     "dist"

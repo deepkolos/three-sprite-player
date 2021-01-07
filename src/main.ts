@@ -11,7 +11,6 @@ export default class ThreeSpritePlayer {
   mesh?: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>;
 
   constructor(
-    protected threeInstance: any,
     protected tiles: THREE.Texture[],
     protected totalFrame: number,
     protected row: number,
@@ -23,24 +22,14 @@ export default class ThreeSpritePlayer {
     this.currFrame = 0;
     this.frameGap = 1000 / fps;
     tiles.forEach(texture => {
-      texture.wrapS = threeInstance.ClampToEdgeWrapping;
-      texture.wrapT = threeInstance.ClampToEdgeWrapping;
-      texture.minFilter = threeInstance.LinearFilter
+      texture.wrapS = 1001; // THREE.ClampToEdgeWrapping;
+      texture.wrapT = 1001; // three.ClampToEdgeWrapping;
+      texture.minFilter = 1006; // THREE.LinearFilter
       texture.repeat.set(1 / this.col, 1 / this.row);
       if (sRGB)
-        texture.encoding = threeInstance.sRGBEncoding
+        texture.encoding = 3001; // THREE.sRGBEncoding
     });
     this.updateOffset();
-  }
-
-  initMesh(w, h) {
-    const geometry = new this.threeInstance.PlaneGeometry(w, h);
-    const material = new this.threeInstance.MeshBasicMaterial({
-      map: this.texture,
-      transparent: true,
-    });
-    this.mesh = new this.threeInstance.Mesh(geometry, material);
-    return this.mesh
   }
 
   public stop() {
@@ -72,8 +61,6 @@ export default class ThreeSpritePlayer {
     }
 
     this.updateOffset()
-    // console.log(this.currTile, this.currTileOffset);
-    if (this.mesh) this.mesh.material.map = this.texture;
   }
 
   protected updateOffset() {
@@ -96,6 +83,5 @@ export default class ThreeSpritePlayer {
     this.tiles.forEach(texture => texture.dispose());
     this.tiles.length = 0;
     this.mesh = null
-    this.threeInstance = null
   }
 }

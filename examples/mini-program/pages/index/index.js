@@ -1,18 +1,13 @@
-
-import ThreeSpritePlayer from '../../tsp'
-import { createScopedThreejs } from 'threejs-miniprogram'
+import ThreeSpritePlayer from '../../tsp';
+import { createScopedThreejs } from 'threejs-miniprogram';
 
 function getNode(id, ctx, fields = { node: true, rect: true, size: true }) {
   return new Promise(function (resolve) {
-    wx.createSelectorQuery()
-      .in(ctx)
-      .select(id)
-      .fields(fields)
-      .exec(resolve);
+    wx.createSelectorQuery().in(ctx).select(id).fields(fields).exec(resolve);
   });
 }
 
-const { windowWidth, windowHeight, pixelRatio } = wx.getSystemInfoSync()
+const { windowWidth, windowHeight, pixelRatio } = wx.getSystemInfoSync();
 
 Page({
   async onLoad() {
@@ -30,8 +25,8 @@ Page({
       total: 10,
       fps: 16,
     };
-    const canvas = (await getNode('#canvas', this))[0].node
-    const THREE = createScopedThreejs(canvas)
+    const canvas = (await getNode('#canvas', this))[0].node;
+    const THREE = createScopedThreejs(canvas);
     const renderer = new THREE.WebGLRenderer({ canvas });
     // renderer.outputEncoding = THREE.sRGBEncoding;
     const scene = new THREE.Scene();
@@ -44,19 +39,28 @@ Page({
     const textureLoader = new THREE.TextureLoader();
 
     renderer.setSize(windowWidth, windowHeight);
-    renderer.setPixelRatio(pixelRatio)
+    renderer.setPixelRatio(pixelRatio);
 
-    Promise.all(tile.url.map(url => new Promise((resolve, reject) => {
-      textureLoader.load(url, texture => resolve(texture), undefined, reject)
-    }))).then(tiles => {
+    Promise.all(
+      tile.url.map(
+        url =>
+          new Promise((resolve, reject) => {
+            textureLoader.load(
+              url,
+              texture => resolve(texture),
+              undefined,
+              reject,
+            );
+          }),
+      ),
+    ).then(tiles => {
       const spritePlayer = new ThreeSpritePlayer(
-        THREE,
         tiles,
         tile.total,
         tile.row,
         tile.col,
         tile.fps,
-        false
+        false,
       );
       // 可以自行构建mesh
       const geometry = new THREE.PlaneGeometry(tile.w, tile.h);
@@ -66,9 +70,6 @@ Page({
       });
       const mesh = new THREE.Mesh(geometry, material);
 
-      // 也可以通过initMesh
-      // const mesh = spritePlayer.initMesh(THREE, tile.w, tile.h)
-
       mesh.position.set(tile.x, tile.y, tile.z);
       scene.add(mesh);
       // spritePlayer.stop();
@@ -76,12 +77,12 @@ Page({
       function render() {
         canvas.requestAnimationFrame(render);
         spritePlayer.animate();
-        // 手动构建mesh需要手动更新material.map
+        // 更新material.map
         material.map = spritePlayer.texture;
         renderer.render(scene, camera);
       }
 
       render();
     });
-  }
-})
+  },
+});

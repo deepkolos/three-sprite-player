@@ -59,25 +59,21 @@
 
       Promise.all(tile.url.map(i => textureLoader.loadAsync(i))).then(tiles => {
         const spritePlayer = new ThreeSpritePlayer(
-          THREE,
           tiles,
           tile.total,
           tile.row,
           tile.col,
           tile.fps,
         );
-        // 可以自行构建mesh
+
         const geometry = new THREE.PlaneGeometry(tile.w, tile.h);
         const material = new THREE.MeshBasicMaterial({
           map: spritePlayer.texture,
           transparent: true,
         });
         const mesh = new THREE.Mesh(geometry, material);
-
-        // 也可以通过initMesh
-        // const mesh = spritePlayer.initMesh(THREE, tile.w, tile.h)
-
         mesh.position.set(tile.x, tile.y, tile.z);
+
         scene.add(mesh);
         spritePlayer.stop();
         btn.disabled = false;
@@ -89,7 +85,7 @@
         function render() {
           requestAnimationFrame(render);
           spritePlayer.animate();
-          // 手动构建mesh需要手动更新material.map
+          // 更新material.map
           material.map = spritePlayer.texture;
           renderer.render(scene, camera);
         }

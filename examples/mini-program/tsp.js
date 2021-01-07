@@ -1,9 +1,8 @@
 var ThreeSpritePlayer = /** @class */ (function () {
-    function ThreeSpritePlayer(threeInstance, tiles, totalFrame, row, col, fps, sRGB) {
+    function ThreeSpritePlayer(tiles, totalFrame, row, col, fps, sRGB) {
         var _this = this;
         if (fps === void 0) { fps = 24; }
         if (sRGB === void 0) { sRGB = true; }
-        this.threeInstance = threeInstance;
         this.tiles = tiles;
         this.totalFrame = totalFrame;
         this.row = row;
@@ -13,24 +12,15 @@ var ThreeSpritePlayer = /** @class */ (function () {
         this.currFrame = 0;
         this.frameGap = 1000 / fps;
         tiles.forEach(function (texture) {
-            texture.wrapS = threeInstance.ClampToEdgeWrapping;
-            texture.wrapT = threeInstance.ClampToEdgeWrapping;
-            texture.minFilter = threeInstance.LinearFilter;
+            texture.wrapS = 1001; // THREE.ClampToEdgeWrapping;
+            texture.wrapT = 1001; // three.ClampToEdgeWrapping;
+            texture.minFilter = 1006; // THREE.LinearFilter
             texture.repeat.set(1 / _this.col, 1 / _this.row);
             if (sRGB)
-                texture.encoding = threeInstance.sRGBEncoding;
+                texture.encoding = 3001; // THREE.sRGBEncoding
         });
         this.updateOffset();
     }
-    ThreeSpritePlayer.prototype.initMesh = function (w, h) {
-        var geometry = new this.threeInstance.PlaneGeometry(w, h);
-        var material = new this.threeInstance.MeshBasicMaterial({
-            map: this.texture,
-            transparent: true
-        });
-        this.mesh = new this.threeInstance.Mesh(geometry, material);
-        return this.mesh;
-    };
     ThreeSpritePlayer.prototype.stop = function () {
         this.playing = false;
     };
@@ -55,14 +45,12 @@ var ThreeSpritePlayer = /** @class */ (function () {
         this.startFrame = (_b = this.startFrame) !== null && _b !== void 0 ? _b : this.currFrame;
         var nextFrame = this.startFrame + ~~((now - this.startTime) / this.frameGap);
         this.currFrame = nextFrame % this.totalFrame;
+        console.log(~~((now - this.startTime) / this.frameGap), now - this.startTime);
         if (nextFrame > this.currFrame) {
             this.startTime = now;
             this.startFrame = this.currFrame;
         }
         this.updateOffset();
-        // console.log(this.currTile, this.currTileOffset);
-        if (this.mesh)
-            this.mesh.material.map = this.texture;
     };
     ThreeSpritePlayer.prototype.updateOffset = function () {
         this.currTile = ~~(this.currFrame / (this.col * this.row));
@@ -82,7 +70,6 @@ var ThreeSpritePlayer = /** @class */ (function () {
         this.tiles.forEach(function (texture) { return texture.dispose(); });
         this.tiles.length = 0;
         this.mesh = null;
-        this.threeInstance = null;
     };
     return ThreeSpritePlayer;
 }());
