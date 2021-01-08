@@ -22,12 +22,12 @@ export default class ThreeSpritePlayer {
     this.currFrame = 0;
     this.frameGap = 1000 / fps;
     tiles.forEach(texture => {
-      texture.wrapS = 1001; // THREE.ClampToEdgeWrapping;
-      texture.wrapT = 1001; // three.ClampToEdgeWrapping;
-      texture.minFilter = 1006; // THREE.LinearFilter
+      // texture.wrapS = 1001; // THREE.ClampToEdgeWrapping;
+      // texture.wrapT = 1001; // three.ClampToEdgeWrapping;
+      // texture.minFilter = 1006; // THREE.LinearFilter
       texture.repeat.set(1 / this.col, 1 / this.row);
-      if (sRGB)
-        texture.encoding = 3001; // THREE.sRGBEncoding
+
+      if (sRGB) texture.encoding = 3001; // THREE.sRGBEncoding
     });
     this.updateOffset();
   }
