@@ -1,4 +1,5 @@
 import json from '@rollup/plugin-json';
+import addCliEntry from './add-cli-entry'
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
@@ -9,6 +10,7 @@ const plugins = [
   resolve({ jail: 'jimp' }), // so Rollup can find `ms`
   commonjs(), // so Rollup can convert `ms` to an ES module
   typescript(),
+  addCliEntry(),
 ];
 
 export default [
