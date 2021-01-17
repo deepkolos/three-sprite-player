@@ -1,15 +1,15 @@
 import json from '@rollup/plugin-json';
-import addCliEntry from './add-cli-entry'
+import addCliEntry from './add-cli-entry';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
-import typescript from '@rollup/plugin-typescript';
+import sucrase from '@rollup/plugin-sucrase';
 import pkg from './package.json';
 
 const plugins = [
   json(),
-  resolve({ jail: 'jimp' }), // so Rollup can find `ms`
+  resolve({ jail: 'jimp', preferBuiltins: true }), // so Rollup can find `ms`
   commonjs(), // so Rollup can convert `ms` to an ES module
-  typescript(),
+  sucrase({ transforms: ['typescript'] }),
   addCliEntry(),
 ];
 
@@ -22,6 +22,7 @@ export default [
       file: pkg.browser,
       format: 'umd',
     },
+    external: ['jimp'],
     plugins,
   },
 
@@ -34,7 +35,7 @@ export default [
   {
     input: 'src/main.ts',
     output: [
-      { file: pkg.main, format: 'cjs' },
+      { file: pkg.main, format: 'cjs', exports: 'auto' },
       { file: pkg.module, format: 'es' },
       { file: './examples/mini-program/tsp.js', format: 'es' },
     ],
@@ -46,6 +47,7 @@ export default [
     output: {
       file: pkg.bin['tsp-cli'],
       format: 'cjs',
+      exports: 'auto',
     },
     plugins,
   },
