@@ -19,7 +19,8 @@
     "prepublish": "npm run build"
   },
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "keywords": [],
   "author": "DeepKolos<deepkolos@qq.com>",
