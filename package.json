@@ -1,6 +1,6 @@
 {
   "name": "three-sprite-player",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "一个适用于小程序的threejs分块序列图播放工具以及分块工具",
   "bin": {
     "tsp-cli": "dist/three-sprite-player.cli.js"
