@@ -45,8 +45,8 @@ async function parseArgs({
   if (!imgs.length) throw new Error('empty directory');
 
   const oneImg = await Jimp.create(dir + path.sep + imgs[0]);
-  const imgW = ~~w ?? oneImg.getWidth();
-  const imgH = ~~h ?? oneImg.getHeight();
+  const imgW = ~~w || oneImg.getWidth();
+  const imgH = ~~h || oneImg.getHeight();
 
   return {
     dir,
