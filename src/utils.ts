@@ -8,3 +8,13 @@ export function exec(cmd: string): Promise<string> {
     });
   });
 }
+
+export function alginPowOfTwo(n: number) {
+  if (n < 1) return 1;
+
+  let i = 1;
+
+  while (i < n) i <<= 1;
+
+  return i;
+}

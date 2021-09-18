@@ -4,7 +4,7 @@
 
 ## 解决的问题
 
-由于微信小程序不支持 2048\*2948 以上大小的纹理图片（小米 8，IOS 未测），所以合成的序列帧需要每张 2048\*2048 以下，多张加载的方式。
+由于微信小程序不支持 2048\*2948 以上大小的纹理图片（小米 8，IOS），所以合成的序列帧需要每张 2048\*2048 以下，多张加载的方式。
 
 纹理的 encoding 设置默认 _sRGBEncoding_
 
@@ -69,11 +69,18 @@ Promise.all(tile.url.map(i => textureLoader.loadAsync(i))).then(tiles => {
 网页示例的使用请参考`examples/web`
 小程序示例的使用请参考`examples/mini-program`
 
+> 合成后的图片推荐使用[Imagine](https://github.com/meowtec/Imagine)或者[TinyPNG](https://tinypng.com/)进行进一步压缩体积
+
+## TODO
+
+0. 支持生成 2 的幂次方 tile（done 通过 jimp.contain 实现，默认取大于素材宽高大的 2 的幂次方
+1. 生成 glTF（待定
+
 # 感谢
 
 https://github.com/MaciejWWojcik/three-plain-animator
 
-精简代码，适配小程序，支持分块序列帧，无threejs依赖
+精简代码，适配小程序，支持分块序列帧，无 threejs 依赖
 
 # LICENSE
 
