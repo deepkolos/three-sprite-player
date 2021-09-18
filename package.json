@@ -15,6 +15,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "cli": "node dist/three-sprite-player.cli.js -i ./examples/img/frames 1024",
+    "cli2": "node dist/three-sprite-player.cli.js -i ./examples/img/ani-zebra_40f 2048 512 512",
     "test": "node test/test.js",
     "prepublish": "npm run build"
   },

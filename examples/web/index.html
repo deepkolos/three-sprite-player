@@ -17,6 +17,7 @@
         right: 0;
         font-size: 20px;
         padding: 5px;
+        width: 65px;
       }
     </style>
   </head>
@@ -24,20 +25,36 @@
     <script src="https://threejs.org/build/three.js"></script>
     <script src="../../dist/three-sprite-player.umd.js"></script>
     <script>
-      const tile = {
-        url: Array(3)
-          .fill(0)
-          .map((v, k) => `../img/output-${k}.png`),
-        x: 0,
-        y: 0,
-        z: -15,
-        w: (10 * 358) / 358,
-        h: 10,
-        col: 2,
-        row: 2,
-        total: 10,
-        fps: 16,
-      };
+      const tiles = [
+        {
+          url: Array(3)
+            .fill(0)
+            .map((v, k) => `../img/output-${k}.png`),
+          x: 0,
+          y: 0,
+          z: -15,
+          w: (10 * 358) / 358,
+          h: 10,
+          col: 2,
+          row: 2,
+          total: 10,
+          fps: 16,
+        },
+        {
+          url: Array(3)
+            .fill(0)
+            .map((v, k) => `../img/ani-zebra_40f-${k}.png`),
+          x: 2.8,
+          y: -2.8,
+          z: -15,
+          w: 5,
+          h: 5,
+          col: 4,
+          row: 4,
+          total: 50,
+          fps: 18,
+        },
+      ];
 
       const renderer = new THREE.WebGLRenderer();
       renderer.outputEncoding = THREE.sRGBEncoding;
@@ -57,36 +74,50 @@
 
       renderer.setSize(window.innerWidth, window.innerHeight);
 
-      Promise.all(tile.url.map(i => textureLoader.loadAsync(i))).then(tiles => {
-        const spritePlayer = new ThreeSpritePlayer(
-          tiles,
-          tile.total,
-          tile.row,
-          tile.col,
-          tile.fps,
-        );
+      Promise.all(
+        tiles.map(tile =>
+          Promise.all(tile.url.map(i => textureLoader.loadAsync(i))).then(
+            tiles => {
+              const spritePlayer = new ThreeSpritePlayer(
+                tiles,
+                tile.total,
+                tile.row,
+                tile.col,
+                tile.fps,
+              );
 
-        const geometry = new THREE.PlaneGeometry(tile.w, tile.h);
-        const material = new THREE.MeshBasicMaterial({
-          map: spritePlayer.texture,
-          transparent: true,
-        });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.set(tile.x, tile.y, tile.z);
+              const geometry = new THREE.PlaneGeometry(tile.w, tile.h);
+              const material = new THREE.MeshBasicMaterial({
+                map: spritePlayer.texture,
+                transparent: true,
+              });
+              const mesh = new THREE.Mesh(geometry, material);
+              mesh.position.set(tile.x, tile.y, tile.z);
 
-        scene.add(mesh);
-        spritePlayer.stop();
+              scene.add(mesh);
+              spritePlayer.stop();
+              return { material, spritePlayer };
+            },
+          ),
+        ),
+      ).then(ctrls => {
         btn.disabled = false;
         btn.onclick = function () {
-          spritePlayer.playing ? spritePlayer.stop() : spritePlayer.play();
-          btn.textContent = spritePlayer.playing ? '暂停' : '播放';
+          let playing;
+          ctrls.forEach(({ spritePlayer }) => {
+            spritePlayer.playing ? spritePlayer.stop() : spritePlayer.play();
+            playing = spritePlayer.playing;
+          });
+          btn.textContent = playing ? '暂停' : '播放';
         };
 
         function render() {
           requestAnimationFrame(render);
-          spritePlayer.animate();
-          // 更新material.map
-          material.map = spritePlayer.texture;
+          ctrls.forEach(({ spritePlayer, material }) => {
+            spritePlayer.animate();
+            // 更新material.map
+            material.map = spritePlayer.texture;
+          });
           renderer.render(scene, camera);
         }
 

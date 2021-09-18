@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import CLI from './cli';
 import process from 'process';
+import { alginPowOfTwo } from './utils';
 
 const cli = new CLI();
 
@@ -45,8 +46,8 @@ async function parseArgs({
   if (!imgs.length) throw new Error('empty directory');
 
   const oneImg = await Jimp.create(dir + path.sep + imgs[0]);
-  const imgW = ~~w || oneImg.getWidth();
-  const imgH = ~~h || oneImg.getHeight();
+  const imgW = ~~w || alginPowOfTwo(oneImg.getWidth());
+  const imgH = ~~h || alginPowOfTwo(oneImg.getHeight());
 
   return {
     dir,
@@ -63,44 +64,48 @@ async function parseArgs({
 
 const main = async (args: Args) => {
   try {
-    const t = Date.now()
+    const t = Date.now();
     // prettier-ignore
     const { dir, tileW, imgs, cropW, cropH, cropX, cropY, imgW, imgH } = await parseArgs(args,);
     const col = Math.floor(tileW / cropW);
     const row = Math.floor(tileW / cropH);
     const tileNum = Math.ceil(imgs.length / (col * row));
-    // console.log(imgs, imgW, imgH)
-    // console.log(col, row, tileNum);
-    // console.log(dir, tileW, cropX, cropY, cropW, cropH);
-    // return;
+    const dirName = path.basename(dir);
 
-    await Promise.all(Array(tileNum).fill(0).map(async (v, t) => {
-      const tileImg = await Jimp.create(
-        col * cropW,
-        row * cropH,
-        Jimp.rgbaToInt(0, 0, 0, 0),
-      );
-      let sum = 0;
-      const drawSprites = []
-      for (let r = 0; r < row; r++) {
-        for (let c = 0; c < col; c++) {
-          const index = t * row * col + r * col + c;
-          if (index < imgs.length) {
-            drawSprites.push((async () => {
-              const img = await Jimp.create(dir + path.sep + imgs[index]);
-              img.resize(imgW, imgH);
-              img.crop(cropX, cropY, cropW, cropH);
-              tileImg.composite(img, c * cropW, r * cropH);
-              sum++;
-            })())
+    await Promise.all(
+      Array(tileNum)
+        .fill(0)
+        .map(async (v, t) => {
+          const tileImg = await Jimp.create(
+            col * cropW,
+            row * cropH,
+            Jimp.rgbaToInt(0, 0, 0, 0),
+          );
+          let sum = 0;
+          const drawSprites = [];
+          for (let r = 0; r < row; r++) {
+            for (let c = 0; c < col; c++) {
+              const index = t * row * col + r * col + c;
+              if (index < imgs.length) {
+                drawSprites.push(
+                  (async () => {
+                    const img = await Jimp.create(dir + path.sep + imgs[index]);
+                    // img.resize(imgW, imgH);
+                    img.contain(imgW, imgH);
+                    img.crop(cropX, cropY, cropW, cropH);
+                    tileImg.composite(img, c * cropW, r * cropH);
+                    sum++;
+                  })(),
+                );
+              }
+            }
           }
-        }
-      }
-      await Promise.all(drawSprites)
+          await Promise.all(drawSprites);
 
-      console.log(`tile-${t} contains ${sum} sprites`);
-      await tileImg.writeAsync(`output-${t}.png`);
-    }))
+          console.log(`tile-${t} contains ${sum} sprites`);
+          await tileImg.writeAsync(`${dirName}-${t}.png`);
+        }),
+    );
 
     console.log(`
 cost: ${Date.now() - t}ms
@@ -110,9 +115,9 @@ tileNum: ${tileNum}
 spriteNum: ${imgs.length}
 imgW: ${imgW}   cropW: ${cropW}
 imgH: ${imgH}   cropH: ${cropH}
-`)
+`);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 
@@ -126,6 +131,10 @@ cli
   )
 
   .action("tsp-cli -i '../examples/img/frames' 1024", '', 'Examples')
-  .action("tsp-cli -i '../examples/img/frames' 1024 100 100 0 0 100 100", '', 'Examples')
+  .action(
+    "tsp-cli -i '../examples/img/frames' 1024 100 100 0 0 100 100",
+    '',
+    'Examples',
+  )
 
   .run(process.argv.slice(2));
