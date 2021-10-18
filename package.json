@@ -31,11 +31,11 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.0.1",
     "@rollup/plugin-sucrase": "^3.1.0",
-    "http-server": "^0.12.3",
+    "http-server": "^13.0.2",
     "rollup": "^2.35.1",
-    "three": "^0.124.0"
+    "three": "^0.133.1"
   },
   "dependencies": {
-    "jimp": "^0.16.1"
+    "jimp": "^0.16.2-canary.1045.1221.0"
   }
 }

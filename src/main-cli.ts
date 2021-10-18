@@ -90,9 +90,12 @@ const main = async (args: Args) => {
                 drawSprites.push(
                   (async () => {
                     const img = await Jimp.create(dir + path.sep + imgs[index]);
-                    // img.resize(imgW, imgH);
-                    img.contain(imgW, imgH);
-                    img.crop(cropX, cropY, cropW, cropH);
+                    // resize transparency error https://github.com/oliver-moran/jimp/issues/442
+                    if (img.getHeight() !== imgH || img.getWidth() !== imgW) {
+                      // img.resize(imgW, imgH);
+                      img.contain(imgW, imgH);
+                      img.crop(cropX, cropY, cropW, cropH);
+                    }
                     tileImg.composite(img, c * cropW, r * cropH);
                     sum++;
                   })(),
