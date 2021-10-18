@@ -8,6 +8,8 @@
 
 纹理的 encoding 设置默认 _sRGBEncoding_
 
+> 注: JIMP resize 透明图片会导致颜色不对 [jimp/issues/442](https://github.com/oliver-moran/jimp/issues/442)
+
 ## 效果图
 
 <div>
