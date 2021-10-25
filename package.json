@@ -1,6 +1,6 @@
 {
   "name": "three-sprite-player",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "一个适用于小程序的threejs分块序列图播放工具以及分块工具",
   "bin": {
     "tsp-cli": "dist/three-sprite-player.cli.js"
@@ -16,6 +16,7 @@
     "dev": "rollup -c -w",
     "cli": "node dist/three-sprite-player.cli.js -i ./examples/img/frames 1024",
     "cli2": "node dist/three-sprite-player.cli.js -i ./examples/img/ani-zebra_40f 2048 512 512",
+    "cli3": "node dist/three-sprite-player.cli.js -r ./examples/img 2048 512 512",
     "test": "node test/test.js",
     "prepublish": "npm run build"
   },
@@ -31,11 +32,11 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.0.1",
     "@rollup/plugin-sucrase": "^3.1.0",
-    "http-server": "^0.12.3",
+    "http-server": "^13.0.2",
     "rollup": "^2.35.1",
-    "three": "^0.124.0"
+    "three": "^0.133.1"
   },
   "dependencies": {
-    "jimp": "^0.16.1"
+    "jimp": "^0.16.2-canary.1045.1221.0"
   }
 }

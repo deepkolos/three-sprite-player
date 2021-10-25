@@ -86,4 +86,4 @@ class ThreeSpritePlayer {
   }
 }
 
-export default ThreeSpritePlayer;
+export { ThreeSpritePlayer as default };

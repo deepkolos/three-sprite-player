@@ -8,6 +8,8 @@
 
 纹理的 encoding 设置默认 _sRGBEncoding_
 
+> 注: JIMP resize 透明图片会导致颜色不对 [jimp/issues/442](https://github.com/oliver-moran/jimp/issues/442)
+
 ## 效果图
 
 <div>
@@ -75,6 +77,7 @@ Promise.all(tile.url.map(i => textureLoader.loadAsync(i))).then(tiles => {
 
 0. 支持生成 2 的幂次方 tile（done 通过 jimp.contain 实现，默认取大于素材宽高大的 2 的幂次方
 1. 生成 glTF（待定
+2. 批处理（done
 
 # 感谢
 
