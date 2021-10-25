@@ -77,6 +77,7 @@ Promise.all(tile.url.map(i => textureLoader.loadAsync(i))).then(tiles => {
 
 0. 支持生成 2 的幂次方 tile（done 通过 jimp.contain 实现，默认取大于素材宽高大的 2 的幂次方
 1. 生成 glTF（待定
+2. 批处理（done
 
 # 感谢
 
