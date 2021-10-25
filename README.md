@@ -22,6 +22,20 @@
 > npm i -S three-sprite-player
 ```
 
+```sh
+> tsp-cli -h
+
+  -h --help                                                                      显示帮助
+  -v --version                                                                   显示版本
+  -i --input [dir] [?tileW] [?w] [?h] [?cropX] [?cropY] [?cropW] [?cropH]        合成分块序列帧
+  -r --recurse [dir] [?tileW] [?w] [?h] [?cropX] [?cropY] [?cropW] [?cropH]      递归文件夹合成分块序列帧
+
+Examples:
+  tsp-cli -i '../examples/img/frames' 1024
+  tsp-cli -i '../examples/img/frames' 1024 100 100 0 0 100 100
+  tsp-cli -r '../examples' 1024 100 100 0 0 100 100
+```
+
 ```js
 const tile = {
   url: Array(3)
