@@ -2,3 +2,6 @@ node_modules
 package-lock.json
 examples
 test
+demo.gif
+add-cli-entry.js
+rollup.config.js
