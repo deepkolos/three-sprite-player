@@ -1,9 +1,11 @@
 import * as Jimp from 'jimp';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import CLI from './cli';
 import process from 'process';
-import { alginPowOfTwo } from './utils';
+import { alginPowOfTwo, exec, Pool, walkDir } from './utils';
+import { version } from '../package.json';
 
 const cli = new CLI();
 
@@ -41,7 +43,10 @@ async function parseArgs({
   cropH,
 }: Args): Promise<ArgsParsed> {
   dir = path.resolve(process.cwd(), dir);
-  const imgs = fs.readdirSync(dir).sort();
+  const imgs = fs
+    .readdirSync(dir)
+    .filter(i => i.match(/\.(png)$/i))
+    .sort();
 
   if (!imgs.length) throw new Error('empty directory');
 
@@ -70,7 +75,10 @@ const main = async (args: Args) => {
     const col = Math.floor(tileW / cropW);
     const row = Math.floor(tileW / cropH);
     const tileNum = Math.ceil(imgs.length / (col * row));
-    const dirName = path.basename(dir);
+    const dirName =
+      path.resolve(path.relative(process.cwd(), dir), '..') +
+      path.sep +
+      path.basename(dir);
 
     await Promise.all(
       Array(tileNum)
@@ -110,6 +118,20 @@ const main = async (args: Args) => {
         }),
     );
 
+    // prettier-ignore
+    fs.writeFileSync(
+      `${dirName}.json`,
+      JSON.stringify(
+        {
+          tileNum,
+          spriteNum: imgs.length,
+          col, row, imgW, imgH, cropW, cropH, tileW,
+        },
+        null,
+        2,
+      ),
+    );
+
     console.log(`
 cost: ${Date.now() - t}ms
 col: ${col}
@@ -120,17 +142,45 @@ imgW: ${imgW}   cropW: ${cropW}
 imgH: ${imgH}   cropH: ${cropH}
 `);
   } catch (error) {
-    console.log(error);
+    console.log('error:', error?.message);
   }
 };
 
 cli
   .action('-h --help', '显示帮助', '', () => cli.help())
+  .action('-v --version', '显示版本', '', () => console.log(version))
   .action<Args>(
     '-i --input [dir] [?tileW] [?w] [?h] [?cropX] [?cropY] [?cropW] [?cropH]',
     '合成分块序列帧',
     '',
     main,
+  )
+  .action<Args>(
+    '-r --recurse [dir] [?tileW] [?w] [?h] [?cropX] [?cropY] [?cropW] [?cropH]',
+    '递归文件夹合成分块序列帧',
+    '',
+    async args => {
+      const dir = path.resolve(process.cwd(), args.dir);
+      const {
+        tileW = '',
+        w = '',
+        h = '',
+        cropX = '',
+        cropY = '',
+        cropW = '',
+        cropH = '',
+      } = args;
+      const pool = new Pool(dirname => {
+        return exec(
+          `tsp-cli -i ${dirname} ${tileW} ${w} ${h} ${cropX} ${cropY} ${cropW} ${cropH}`,
+        ).then(stdout => {
+          console.log(`done: ${dirname}`);
+          console.log(stdout);
+        });
+      }, os.cpus().length);
+
+      walkDir(dir, dir => pool.add(dir));
+    },
   )
 
   .action("tsp-cli -i '../examples/img/frames' 1024", '', 'Examples')
@@ -139,5 +189,6 @@ cli
     '',
     'Examples',
   )
+  .action("tsp-cli -r '../examples' 1024 100 100 0 0 100 100", '', 'Examples')
 
   .run(process.argv.slice(2));
