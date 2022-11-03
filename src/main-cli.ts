@@ -73,12 +73,13 @@ const main = async (args: Args) => {
     // prettier-ignore
     const { dir, tileW, imgs, cropW, cropH, cropX, cropY, imgW, imgH } = await parseArgs(args,);
     const col = Math.floor(tileW / cropW);
-    const row = Math.floor(tileW / cropH);
+    let row = Math.floor(tileW / cropH);
     const tileNum = Math.ceil(imgs.length / (col * row));
     const dirName =
       path.resolve(path.relative(process.cwd(), dir), '..') +
       path.sep +
       path.basename(dir);
+    row = tileNum === 1 ? Math.ceil(imgs.length / col) : row;
 
     await Promise.all(
       Array(tileNum)
