@@ -101,8 +101,8 @@ const main = async (args: Args) => {
                     const img = await Jimp.create(dir + path.sep + imgs[index]);
                     // resize transparency error https://github.com/oliver-moran/jimp/issues/442
                     if (img.getHeight() !== imgH || img.getWidth() !== imgW) {
-                      // img.resize(imgW, imgH);
-                      img.contain(imgW, imgH);
+                      img.resize(imgW, imgH);
+                      // img.contain(imgW, imgH);
                       img.crop(cropX, cropY, cropW, cropH);
                     }
                     tileImg.composite(img, c * cropW, r * cropH);
